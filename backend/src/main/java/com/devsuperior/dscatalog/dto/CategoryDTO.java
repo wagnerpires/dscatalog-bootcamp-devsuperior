@@ -18,7 +18,7 @@ public class CategoryDTO implements Serializable {
 		this.name = name;
 	}
 	
-	public CategoryDTO(Category entity) {
+	public CategoryDTO(Category entity) { // Dessa forma o construtor já popula os dados do dto com os dados da entidade
 		this.id = entity.getId();
 		this.name = entity.getName();		
 	}

@@ -44,9 +44,7 @@ public class ProductResource { // Implementa o controlador Rest (RECURSOS)
 	}
 
 	@GetMapping(value = "/{id}") // Busca o produto pelo Id
-	public ResponseEntity<ProductDTO> findById(@PathVariable Long id) { // Annotation que faz com que a variável
-																			// passada na roda case com o parametro do
-																			// método
+	public ResponseEntity<ProductDTO> findById(@PathVariable Long id) { // Annotation que faz com que a variável passada na roda case com o parametro do método
 		ProductDTO dto = service.findById(id);
 		return ResponseEntity.ok().body(dto);
 	}

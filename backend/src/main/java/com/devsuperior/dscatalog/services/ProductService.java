@@ -1,0 +1,91 @@
+package com.devsuperior.dscatalog.services;
+
+import java.util.Optional;
+
+import javax.persistence.EntityNotFoundException;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.devsuperior.dscatalog.dto.ProductDTO;
+import com.devsuperior.dscatalog.entities.Product;
+import com.devsuperior.dscatalog.repositories.ProductRepository;
+import com.devsuperior.dscatalog.services.exceptions.DatabaseException;
+import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
+
+@Service // Registra a classe como um componente que vai participar do sistema de injeção
+			// de dependência automatizada gerenciada pelo Spring
+
+public class ProductService {
+
+	@Autowired // Faz a instância ser gerenciada pelo Spring (Inj. de dependência)
+	private ProductRepository repository;
+
+	@Transactional(readOnly = true) // Cria uma transação com o BD
+	public Page<ProductDTO> findAllPaged(PageRequest pageRequest) {
+		Page<Product> list = repository.findAll(pageRequest);
+		return list.map(x -> new ProductDTO(x));
+	}
+
+	@Transactional(readOnly = true)
+	public ProductDTO findById(Long id) {
+		Optional<Product> obj = repository.findById(id); // Optional evita que trabalhe com valor nulo (java 8)
+		Product entity = obj.orElseThrow(() -> new EntityNotFoundException("Entity not found"));
+		return new ProductDTO(entity, entity.getCategories());
+	}
+
+	@Transactional
+	public ProductDTO insert(ProductDTO dto) {
+		Product entity = new Product();
+		entity.setId(null); // Gerado automaticamente pelo BD
+/*
+		entity.setName(dto.getName());
+		entity.setName(dto.getDescription());
+		entity.setName(dto.getPrice().value);
+		entity.setName(dto.getImgUrl());
+		entity.setName(dto.getDate());
+		entity.setName(dto.getName());
+*/		
+		entity = repository.save(entity);
+		return new ProductDTO(entity);
+	}
+
+	@Transactional
+	public ProductDTO update(Long id, ProductDTO dto) {
+		try {
+			Product entity = repository.getOne(id); // o método getOne não toca no banco de dados, instancia um objeto
+														// provisório
+			/*
+			entity.setName(dto.getName());
+			entity.setName(dto.getDescription());
+			entity.setName(dto.getPrice().value);
+			entity.setName(dto.getImgUrl());
+			entity.setName(dto.getDate());
+			entity.setName(dto.getName());
+			 */		
+			
+			entity = repository.save(entity);
+			return new ProductDTO(entity);
+		} catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException("Id not found " + id);
+		}
+	}
+
+	// Sem @Transactional - Para capturar exceção do BD caso ocorra
+	public void delete(Long id) {
+		try {
+			repository.deleteById(id);
+		} catch (EmptyResultDataAccessException e) {
+			throw new ResourceNotFoundException("Id not found " + id);
+		}
+		catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Integrity violation");
+		}
+		
+	}
+}

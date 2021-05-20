@@ -1,30 +1,43 @@
 package com.devsuperior.dscatalog.entities;
 
 import java.io.Serializable;
+import java.time.Instant;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.PrePersist;
+import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="tb_category")
-public class Category implements Serializable { // Serializable - Conversão em seq. de bytes...  Obj. poder ser gravado em arquivos e trafegar na rede sem problemas
+@Table(name = "tb_category")
+public class Category implements Serializable { // Serializable - Conversão em seq. de bytes... Obj. poder ser gravado
+												// em arquivos e trafegar na rede sem problemas
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
-	@GeneratedValue(strategy= GenerationType.IDENTITY)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
-	
+
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+	private Instant createdAt;
+
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+	private Instant updatedAt;
+
 	public Category() {
-		
+
 	}
 
-	public Category(Long id, String name) {
+	public Category(Long id, String name, Instant createdAt, Instant updatedAt) {
 		this.id = id;
 		this.name = name;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 	}
 
 	public Long getId() {
@@ -43,6 +56,24 @@ public class Category implements Serializable { // Serializable - Conversão em 
 		this.name = name;
 	}
 
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
+
+	public Instant getUpdatedAt() {
+		return updatedAt;
+	}
+
+	@PrePersist
+	public void prePersist() {
+		createdAt = Instant.now();
+	}
+
+	@PreUpdate
+	public void preUpdate() {
+		updatedAt = Instant.now();
+	}
+	
 	@Override
 	public int hashCode() { // MÉTODO PADRÁO DE COMPARAÇÃO (RÁPIDA) ENTRE OBJETOS POR HASHCODE
 		final int prime = 31;
@@ -52,7 +83,7 @@ public class Category implements Serializable { // Serializable - Conversão em 
 	}
 
 	@Override
-	public boolean equals(Object obj) { //MÉTODO PADRÃO PARA COMPARAR (LENTA) SE UM OBJ É IGUAL A OUTRO
+	public boolean equals(Object obj) { // MÉTODO PADRÃO PARA COMPARAR (LENTA) SE UM OBJ É IGUAL A OUTRO
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -67,5 +98,5 @@ public class Category implements Serializable { // Serializable - Conversão em 
 			return false;
 		return true;
 	}
-	
+
 }

@@ -49,9 +49,25 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.junit.vintage</groupId>
+					<artifactId>junit-vintage-engile</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
-	</dependencies>
 
+		<dependency>
+			<groupId>io.springfox</groupId>
+				<artifactId>springfox-boot-starter</artifactId>
+		</dependency>
+		
+		<dependency>
+			<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger-ui</artifactId>
+		</dependency>
+
+	</dependencies>
 	<build>
 		<plugins>
 			<plugin>

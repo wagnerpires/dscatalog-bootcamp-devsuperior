@@ -21,6 +21,8 @@ public class ProductDTO implements Serializable{
 	
 	private List<CategoryDTO> categories = new ArrayList<>();
 	
+	// var myList = new ArrayList<String>(); // RECURSO JAVA 10 em diante inferência de tipo de variável local 
+	
 	public ProductDTO() {
 	}
 

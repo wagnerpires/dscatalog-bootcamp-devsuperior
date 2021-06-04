@@ -14,6 +14,7 @@ import javax.validation.ConstraintValidatorContext;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class UserUpdateValidator implements ConstraintValidator<UserUpdateValid, UserUpdateDTO> {
 
@@ -29,8 +30,9 @@ public class UserUpdateValidator implements ConstraintValidator<UserUpdateValid,
     @Override
     public boolean isValid(UserUpdateDTO dto, ConstraintValidatorContext context) { // Testes de validação, acrescentando objetos FieldMessage à lista
 
+
         @SuppressWarnings("unchecked")
-        var uriVars = (Map <String, String>)  request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE); //IVO
+        var uriVars = (Map <String, String>) request.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE); //IVO
         long userId = Long.parseLong(uriVars.get("id"));
 
         List<FieldMessage> list = new ArrayList<>();

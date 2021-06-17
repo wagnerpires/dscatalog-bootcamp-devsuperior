@@ -1,29 +1,30 @@
 package com.devsuperior.dscatalog.dto;
 
-import com.devsuperior.dscatalog.entities.User;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
+import com.devsuperior.dscatalog.entities.User;
+
 public class UserDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
 	private Long id;
-
-	@NotBlank(message = "Campo obrigatório") //Bean Validation
+	
+	@NotBlank(message = "Campo obrigatório")
 	private String firstName;
-    private String lastName;
+	private String lastName;
 
-    @Email(message = "Favor entrar com um email válido")
-    private String email;
-    
-    Set<RoleDTO> roles = new HashSet<>();
-    
-    public UserDTO() {
-    }
+	@Email(message = "Favor entrar um email válido")
+	private String email;
+	
+	Set<RoleDTO> roles = new HashSet<>();
+	
+	public UserDTO() {
+	}
 
 	public UserDTO(Long id, String firstName, String lastName, String email) {
 		this.id = id;
@@ -31,11 +32,11 @@ public class UserDTO implements Serializable {
 		this.lastName = lastName;
 		this.email = email;
 	}
-
+	
 	public UserDTO(User entity) {
 		id = entity.getId();
-		firstName = entity.getfirstName();
-		lastName = entity.getLastname();
+		firstName = entity.getFirstName();
+		lastName = entity.getLastName();
 		email = entity.getEmail();
 		entity.getRoles().forEach(role -> this.roles.add(new RoleDTO(role)));
 	}
@@ -75,5 +76,4 @@ public class UserDTO implements Serializable {
 	public Set<RoleDTO> getRoles() {
 		return roles;
 	}
-
 }

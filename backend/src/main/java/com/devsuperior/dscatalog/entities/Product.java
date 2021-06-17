@@ -25,25 +25,24 @@ public class Product implements Serializable {
 	private Long id;
 	private String name;
 	
-	@Column(columnDefinition = "TEXT") //Aceitar texto mais longo
+	@Column(columnDefinition = "TEXT")
 	private String description;
 	private Double price;
 	private String imgUrl;
-
+	
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant date;
-
+	
 	@ManyToMany
-	@JoinTable(name = "tb_product_category", 
-		joinColumns = @JoinColumn(name = "product_id"), 
-		inverseJoinColumns = @JoinColumn(name = "category_id"))
-	Set<Category> categories = new HashSet<>(); // O Set (Ao invés do list) não aceita repetições
-
+	@JoinTable(name = "tb_product_category",
+		joinColumns = @JoinColumn(name = "product_id"),
+		inverseJoinColumns = @JoinColumn(name = "category_id"))	
+	Set<Category> categories = new HashSet<>();
+	
 	public Product() {
 	}
 
 	public Product(Long id, String name, String description, Double price, String imgUrl, Instant date) {
-		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -127,6 +126,5 @@ public class Product implements Serializable {
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
-	}
-
+	}	
 }

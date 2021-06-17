@@ -15,62 +15,50 @@ import com.devsuperior.dscatalog.tests.Factory;
 @DataJpaTest
 public class ProductRepositoryTests {
 
-    @Autowired
-    private ProductRepository repository;
+	@Autowired
+	private ProductRepository repository;
+	
+	private long existingId;
+	private long nonExistingId;
+	private long countTotalProducts;
+	
+	@BeforeEach
+	void setUp() throws Exception {
+		existingId = 1L;
+		nonExistingId = 1000L;
+		countTotalProducts = 25L;
+	}
+	
+	@Test
+	public void saveShouldPersistWithAutoincrementWhenIdIsNull() {
 
-    private long existId;
-    private long nonExistingId;
-    private long countTotalProducts;
+		Product product = Factory.createProduct();
+		product.setId(null);
+		
+		product = repository.save(product);
+		Optional<Product> result = repository.findById(product.getId());
+		
+		Assertions.assertNotNull(product.getId());
+		Assertions.assertEquals(countTotalProducts + 1L, product.getId());
+		Assertions.assertTrue(result.isPresent());
+		Assertions.assertSame(result.get(), product);
+	}
+	
+	@Test
+	public void deleteShouldDeleteObjectWhenIdExists() {
+		
+		repository.deleteById(existingId);
 
-    @BeforeEach
-    void setUp() throws Exception {
-        existId = 1L;
-        nonExistingId = 1000L;
-        countTotalProducts = 25L;
-    }
+		Optional<Product> result = repository.findById(existingId);
+		
+		Assertions.assertFalse(result.isPresent());
+	}
+	
+	@Test
+	public void deleteShouldThrowEmptyResultDataAccessExceptionWhenIdDoesNotExist() {
 
-    @Test
-    public void saveShouldPersistWithAutoIncrementWhenIdIsNull() {
-
-        Product product = Factory.createProduct();
-        product.setId(null);
-
-        product = repository.save(product);
-        
-        Assertions.assertNotNull(product.getId());
-        Assertions.assertEquals(countTotalProducts + 1, product.getId());
-
-    }
-
-    @Test
-    public void deleteShouldDeleteObjectWhenIdExists() {
-        
-    	repository.deleteById(existId);
-
-        Optional<Product> result = repository.findById(existId);
-        Assertions.assertFalse(result.isPresent());
-    }
-
-    @Test
-    public void deleteShouldThrowEmptyResultDataAccessExceptionWhenIdDoesNotExist() {
-        Assertions.assertThrows(EmptyResultDataAccessException.class, () -> {
-            repository.deleteById(nonExistingId);
-        });
-    }
-
-    @Test
-    public void findByIdShouldReturnNonEmptyOptionalWhenIdExists() {
-
-        Optional<Product> result = repository.findById(existId);
-        Assertions.assertTrue(result.isPresent());
-    }
-
-    @Test
-    public void findByIdShouldReturnEmptyOptionalWhenIdDoesNotExist() {
-
-        Optional<Product> result = repository.findById(nonExistingId);
-        Assertions.assertTrue(result.isEmpty());
-    }
-
-
+		Assertions.assertThrows(EmptyResultDataAccessException.class, () -> {
+			repository.deleteById(nonExistingId);			
+		});
+	}
 }

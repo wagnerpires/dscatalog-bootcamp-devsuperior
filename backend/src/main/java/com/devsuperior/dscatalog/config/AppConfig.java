@@ -13,20 +13,20 @@ public class AppConfig {
 	@Value("${jwt.secret}")
 	private String jwtSecret;
 	
-	@Bean // Instância será um componente gerenciado pelo spring
+	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-
+	
 	@Bean
 	public JwtAccessTokenConverter accessTokenConverter() {
 		JwtAccessTokenConverter tokenConverter = new JwtAccessTokenConverter();
-		tokenConverter.setSigningKey(jwtSecret); //Por enquanto hard code
+		tokenConverter.setSigningKey(jwtSecret);
 		return tokenConverter;
 	}
 
 	@Bean
 	public JwtTokenStore tokenStore() {
 		return new JwtTokenStore(accessTokenConverter());
-	}
+	}	
 }

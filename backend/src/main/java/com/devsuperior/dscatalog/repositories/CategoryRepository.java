@@ -5,7 +5,7 @@ import org.springframework.stereotype.Repository;
 
 import com.devsuperior.dscatalog.entities.Category;
 
-@Repository                 //Registrar como um componente injetável do mecanismo de injeção de dependência do Spring
+@Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
 }

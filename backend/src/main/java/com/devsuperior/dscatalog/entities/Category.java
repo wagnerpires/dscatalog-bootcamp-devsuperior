@@ -17,33 +17,29 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "tb_category")
-public class Category implements Serializable { // Serializable - Conversão em seq. de bytes... Obj. poder ser gravado
-												// em arquivos e trafegar na rede sem problemas
+public class Category implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String name;
-
+	
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant createdAt;
 
 	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
 	private Instant updatedAt;
-	
+
 	@ManyToMany(mappedBy = "categories")
 	private Set<Product> products = new HashSet<>();
-
+	
 	public Category() {
-
 	}
 
-	public Category(Long id, String name, Instant createdAt, Instant updatedAt) {
+	public Category(Long id, String name) {
 		this.id = id;
 		this.name = name;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
 	}
 
 	public Long getId() {
@@ -61,7 +57,7 @@ public class Category implements Serializable { // Serializable - Conversão em 
 	public void setName(String name) {
 		this.name = name;
 	}
-
+	
 	public Instant getCreatedAt() {
 		return createdAt;
 	}
@@ -74,18 +70,18 @@ public class Category implements Serializable { // Serializable - Conversão em 
 	public void prePersist() {
 		createdAt = Instant.now();
 	}
-
+	
 	@PreUpdate
 	public void preUpdate() {
 		updatedAt = Instant.now();
 	}
-	
+
 	public Set<Product> getProducts() {
 		return products;
 	}
-
+	
 	@Override
-	public int hashCode() { // MÉTODO PADRÁO DE COMPARAÇÃO (RÁPIDA) ENTRE OBJETOS POR HASHCODE
+	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((id == null) ? 0 : id.hashCode());
@@ -93,7 +89,7 @@ public class Category implements Serializable { // Serializable - Conversão em 
 	}
 
 	@Override
-	public boolean equals(Object obj) { // MÉTODO PADRÃO PARA COMPARAR (LENTA) SE UM OBJ É IGUAL A OUTRO
+	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
 		if (obj == null)
@@ -108,5 +104,4 @@ public class Category implements Serializable { // Serializable - Conversão em 
 			return false;
 		return true;
 	}
-
 }

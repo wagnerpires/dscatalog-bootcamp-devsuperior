@@ -18,9 +18,9 @@ public class CategoryDTO implements Serializable {
 		this.name = name;
 	}
 	
-	public CategoryDTO(Category entity) { // Dessa forma o construtor já popula os dados do dto com os dados da entidade
+	public CategoryDTO(Category entity) {
 		this.id = entity.getId();
-		this.name = entity.getName();		
+		this.name = entity.getName();
 	}
 
 	public Long getId() {
@@ -38,5 +38,4 @@ public class CategoryDTO implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 }

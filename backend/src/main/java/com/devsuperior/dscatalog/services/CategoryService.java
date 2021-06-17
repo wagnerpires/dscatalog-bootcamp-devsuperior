@@ -18,15 +18,13 @@ import com.devsuperior.dscatalog.repositories.CategoryRepository;
 import com.devsuperior.dscatalog.services.exceptions.DatabaseException;
 import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
 
-@Service // Registra a classe como um componente que vai participar do sistema de injeção
-			// de dependência automatizada gerenciada pelo Spring
-
+@Service
 public class CategoryService {
 
-	@Autowired // Faz a instância ser gerenciada pelo Spring (Inj. de dependência)
+	@Autowired
 	private CategoryRepository repository;
-
-	@Transactional(readOnly = true) // Cria uma transação com o BD
+	
+	@Transactional(readOnly = true)
 	public Page<CategoryDTO> findAllPaged(Pageable pageable) {
 		Page<Category> list = repository.findAll(pageable);
 		return list.map(x -> new CategoryDTO(x));
@@ -34,7 +32,7 @@ public class CategoryService {
 
 	@Transactional(readOnly = true)
 	public CategoryDTO findById(Long id) {
-		Optional<Category> obj = repository.findById(id); // Optional evita que trabalhe com valor nulo (java 8)
+		Optional<Category> obj = repository.findById(id);
 		Category entity = obj.orElseThrow(() -> new ResourceNotFoundException("Entity not found"));
 		return new CategoryDTO(entity);
 	}
@@ -42,7 +40,6 @@ public class CategoryService {
 	@Transactional
 	public CategoryDTO insert(CategoryDTO dto) {
 		Category entity = new Category();
-		entity.setId(null); // Gerado automaticamente pelo BD
 		entity.setName(dto.getName());
 		entity = repository.save(entity);
 		return new CategoryDTO(entity);
@@ -51,26 +48,25 @@ public class CategoryService {
 	@Transactional
 	public CategoryDTO update(Long id, CategoryDTO dto) {
 		try {
-			Category entity = repository.getOne(id); // o método getOne não toca no banco de dados, instancia um objeto
-														// provisório
+			Category entity = repository.getOne(id);
 			entity.setName(dto.getName());
 			entity = repository.save(entity);
 			return new CategoryDTO(entity);
-		} catch (EntityNotFoundException e) {
-			throw new ResourceNotFoundException("Id not found " + id);
 		}
+		catch (EntityNotFoundException e) {
+			throw new ResourceNotFoundException("Id not found " + id);
+		}		
 	}
 
-	// Sem @Transactional - Para capturar exceção do BD caso ocorra
 	public void delete(Long id) {
 		try {
 			repository.deleteById(id);
-		} catch (EmptyResultDataAccessException e) {
+		}
+		catch (EmptyResultDataAccessException e) {
 			throw new ResourceNotFoundException("Id not found " + id);
 		}
 		catch (DataIntegrityViolationException e) {
 			throw new DatabaseException("Integrity violation");
 		}
-		
 	}
 }
